@@ -21,7 +21,7 @@ class BlockChain:
 
     def chain_validator():
         gen_block = self.genesis_block()
-        if(gen_block != )
+        if(gen_block != genesis_block())
 
 
 class Transaction:

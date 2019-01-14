@@ -1,6 +1,9 @@
+import binascii
 from base64 import b64encode, b64decode
 from datetime import datetime
-from random import randint
+
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 
 import cryptutil
 
@@ -12,17 +15,23 @@ class BlockChain:
         self.chain = [self.genesis_block()]
         self.pending_transactions = []
         self.level_mining = 2
-        self.mining_reward = len(self.chain)*5
+        self.mining_reward = 1
+
+    def __str__(self):
+        return json.dumps(self, default=
+        lambda o: o.decode('ascii') if type(o) is bytes else o.__dict__,
+           sort_keys=True, indent=4)
 
     def genesis_block(self):
-        return Block(datetime.now(), [], '')
+        return Block(datetime.now(), [], 0, '')
 
     def mine_block(self, minerAddress):
+        self.mining_reward *= len(self.chain)
         reward_transaction = Transaction(None, minerAddress, self.mining_reward)
         self.pending_transactions.append(reward_transaction)
 
         block = Block(datetime.now(),
-                      self.pending_transactions, self.get_newest_block().hash)
+                      self.pending_transactions, self.mining_reward, self.get_newest_block().hash)
         block.mine(self.level_mining)
 
         self.chain.append(block)
@@ -30,10 +39,6 @@ class BlockChain:
 
     def get_newest_block(self):
         return self.chain[len(self.chain)-1]
-
-    def __str__(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-           sort_keys=True, indent=4)
 
     def chain_validator(self):
         gen_block = self.genesis_block()
@@ -54,7 +59,7 @@ class BlockChain:
         return True
 
     def add_transaction(self, transaction):
-        if(len(transaction.f_address) == 0 or len(transaction.t_address) == 0):
+        if(len(transaction.t_address) == 0 and len(transaction.f_address) == 0):
             raise Exception("Transaction should have from and to address")
 
         if(transaction.verify() == False):
@@ -72,7 +77,8 @@ class Transaction:
         self.signature = ""
 
     def __str__(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
+        return json.dumps(self, default=
+        lambda o: o.decode('ascii') if type(o) is bytes else o.__dict__,
            sort_keys=True, indent=4)
 
     def __eq__(self, other):
@@ -89,21 +95,23 @@ class Transaction:
 
     def sign(self, sign_key):
 
-        if(sign_key.publickey() != self.f_address):
+        if(sign_key.publickey().exportKey("PEM") != self.f_address.encode()):
             raise Exception("Cannot sign other wallets")
 
         hash = self.calculate_hash()
-        sign = cryptutil.sign_hash(hash, sign_key)
+        sign = cryptutil.sign_hash(hash.encode(), sign_key)
         self.signature = b64encode(sign)
 
     def verify(self):
-        if(self.f_address == None):
+
+        if(len(self.f_address) == 0):
             return True
 
         if((self.signature == None) and (len(self.signature) == 0)):
             raise Exception("No signature in transaction")
 
-        return cryptutil.verify_hash(self.calculate_hash(), b64decode(self.signature), self.f_address)
+        key = RSA.importKey(self.f_address)
+        return cryptutil.verify_hash(self.calculate_hash().encode(), b64decode(self.signature), key)
 
     def calculate_hash(self):
         return (hashlib.sha256(self.encode_v(self.f_address)+
@@ -116,11 +124,12 @@ class Transaction:
 
 
 class Block:
-    def __init__(self, timestamp, transactions, prevHash = ""):
+    def __init__(self, timestamp, transactions, balance, prevHash = ""):
         self.timestamp = str(timestamp)
         self.transactions = transactions
         self.prev_hash = prevHash
         self.nonce = 0
+        self.balance = balance
         self.hash = self.calculate_hash()
 
     def __str__(self):
@@ -157,12 +166,27 @@ class Block:
 
 
 b = BlockChain()
-b.mine_block("AddressWallet")
-b.mine_block("AddWallet")
-b.mine_block("AddressWallet")
+pub, prv = cryptutil.fake_new_keys(2048)
+pub2, prv2 = cryptutil.fake_new_keys(2048)
+
+b.mine_block(pub.exportKey("PEM").decode('ascii'))
+b.mine_block(pub2.exportKey("PEM").decode('ascii'))
+b.mine_block(pub.exportKey("PEM").decode('ascii'))
+
+trx = Transaction(pub.exportKey("PEM").decode('ascii'), pub2.exportKey("PEM").decode('ascii'), 10)
+trx.sign(prv)
+b.add_transaction(trx)
+
+trx = Transaction(pub.exportKey("PEM").decode('ascii'), pub2.exportKey("PEM").decode('ascii'), 10)
+trx.sign(prv)
+
+b.add_transaction(trx)
+
+b.mine_block(pub.exportKey("PEM").decode('ascii'))
 
 print (str(b))
 print(b.chain_validator())
+
 #print("-"*10+"fail chain"+"-"*10)
 #b.chain[1].hash = "1234123"
 #print(str(b))

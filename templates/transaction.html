@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    h4 {
+        border: 3px dotted black;
+        color: red;
+        max-width: 650px;
+    }
+    .flip-card {
+      font-size: 13px;
+      color: white;
+      padding-bottom: 15px;
+      background-color: transparent;
+      width: 790px;
+      height: 590px;
+      border: 1px solid #f1f1f1;
+      perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      color: white;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Position the front and back side */
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    .flip-card-front {
+      background-color: black;
+      color: white;
+    }
+
+    /* Style the back side */
+    .flip-card-back {
+      background-color: dodgerblue;
+      color: white;
+      font-size: 13px;
+      transform: rotateY(180deg);
+    }
+    h3 {
+        text-align: center;
+    }
+</style>
+<body>
+<center>
+<h1>Transaction {{authorize}} </h1>
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+           <h3>Transaction Hash</h3>
+          <h3>{{transaction.calculate_hash()}}</h3>
+          <h3>Timestamp: {{transaction.timestamp}}</h3>
+        </div>
+        <div class="flip-card-back">
+            <h3>Amount </h3>
+            <h3>{{transaction.amount}}</h3>
+            <h3>Sender </h3>
+            <h3>{{transaction.f_address[26:transaction.f_address.__len__()-26]}}</h3>
+            <h3>Receiver </h3>
+            <h3>{{transaction.t_address[26:transaction.t_address.__len__()-26]}}</h3>
+            <h3>Signature </h3>
+            <h3 style="font-size:2px"><p>{{transaction.signature}}</p></h3>
+
+       </div>
+  </div>
+</div>
+</center>
+</body>
+</html>

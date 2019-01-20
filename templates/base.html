@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    h4 {
+        border: 5px solid black;
+        color: red;
+        max-width: 650px;
+    }
+    .flip-card {
+      font-size: 13px;
+      color: white;
+      padding-bottom: 15px;
+      background-color: transparent;
+      width: 490px;
+      height: 490px;
+      border: 1px solid #f1f1f1;
+      perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    }
+
+    /* This container is needed to position the front and back side */
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      color: white;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    /* Do an horizontal flip when you move the mouse over the flip box container */
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Position the front and back side */
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    /* Style the front side (fallback if image is missing) */
+    .flip-card-front {
+      color: white;
+    }
+
+    /* Style the back side */
+    .flip-card-back {
+      background-color: dodgerblue;
+      color: white;
+      transform: rotateY(180deg);
+    }
+</style>
+<body>
+<center>
+<h1>BlockChain {{authorize}} </h1>
+{% for block in block_chain %}
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front" style="background-image: linear-gradient(to bottom right, black, grey);">
+          <h3>Block</h3>
+          <h3>Previous Hash</h3>
+          <h3>{{block.prev_hash}}</h3>
+          <h3>Timestamp: {{block.timestamp}}</h3>
+        </div>
+        <div class="flip-card-back">
+           <h3>Block's Hash</h3>
+          <h3>{{block.hash}}</h3>
+       </div>
+  </div>
+</div>
+
+{% endfor %}
+</center>
+</body>
+</html>

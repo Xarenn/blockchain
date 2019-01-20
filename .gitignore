@@ -8,6 +8,10 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+pyre
+/pyre
+.pyre_configuration
+.pyre/
 build/
 signTrx.py
 .idea/

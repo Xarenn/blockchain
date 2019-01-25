@@ -39,13 +39,13 @@ def mine_block_endpoint():
 
 @app.route('/state')
 def block_chain_state():
-    return str(block_chain)
+    return json.dumps(str(block_chain))
 
 
 @app.route('/transactions_state')
 def transactions_state():
     transactions = [str(trx) for block in block_chain.chain for trx in block.transactions]
-    return str(transactions)
+    return json.dumps(str(transactions))
 
 
 @app.route('/transactions', methods=['POST', 'GET'])

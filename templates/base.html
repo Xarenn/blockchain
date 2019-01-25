@@ -5,11 +5,6 @@
     <title>Title</title>
 </head>
 <style>
-    h4 {
-        border: 5px solid black;
-        color: red;
-        max-width: 650px;
-    }
     .flip-card {
       font-size: 13px;
       color: white;
@@ -34,7 +29,7 @@
 
     /* Do an horizontal flip when you move the mouse over the flip box container */
     .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
+      transform: rotateX(180deg);
     }
 
     /* Position the front and back side */
@@ -54,12 +49,18 @@
     .flip-card-back {
       background-color: dodgerblue;
       color: white;
-      transform: rotateY(180deg);
+      transform: rotateX(180deg);
     }
 </style>
 <body>
 <center>
-<h1>BlockChain {{authorize}} </h1>
+<h1>BlockChain</h1>
+<h3>Use /transaction?hash='' for list of transactions</h3>
+    <h3>SERVERS:</h3>
+    {% for peer in peers %}
+        <h4>{{peer}}</h4>
+    {% endfor %}
+
 {% for block in block_chain %}
     <div class="flip-card">
       <div class="flip-card-inner">

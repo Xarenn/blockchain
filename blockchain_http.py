@@ -1,7 +1,7 @@
 from random import randint
 from flask import Flask, render_template, request
 from blockchain import BlockChain, Transaction
-from blockchain_connection import json_initializer, parse_request, chain_deserializer, return_peers
+from blockchain_connection import json_initializer, parse_request, chain_deserializer, return_peers, sync_admin_server
 
 import argparse
 import json
@@ -78,9 +78,11 @@ def initialization_p2p():
     if request.method == 'GET':
         return json.dumps(peers)
 
+
 def synchronize_chain(sync_block_chain: list):
     global block_chain
     block_chain = sync_block_chain
+
 
 def prepare():
     pub, prv = cryptutil.fake_new_keys(2048)
@@ -104,6 +106,10 @@ def prepare():
     block_chain.mine_block(pub_txt)
 
 
+def chain_updated(response):
+    print(response.text)
+
+
 if __name__ == "__main__":
     prepare()
     parser = argparse.ArgumentParser()
@@ -120,6 +126,8 @@ if __name__ == "__main__":
         synchronize_chain(chain)
         peers = return_peers('127.0.0.1')
         print(peers)
-        app.run('127.0.0.1', genesis_port+randint(0,10))
+        app.run('127.0.0.1', genesis_port+randint(1,10))
     else:
+        response = sync_admin_server('127.0.0.1',8000, block_chain, 'NewChain')
+        chain_updated(response)
         app.run('127.0.0.1', genesis_port)

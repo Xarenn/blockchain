@@ -4,8 +4,23 @@ import socket
 import requests
 import json
 
+
+def dump_block(block):
+    return {"b_hash": block.hash, "p_hash": block.prev_hash}
+
+
 def parse_request(request):
     return json.loads(json.dumps(request.json()))
+
+
+def sync_admin_server(adm_ip, adm_port, block_chain, name):
+    request_data = [dump_block(block) for block in block_chain.chain]
+    request_data.append({"reward": block_chain.mining_reward})
+    request_data.append({"name": name})
+
+    response = requests.post("http://"+adm_ip+':'+str(adm_port)+"/api/v2/sync/",
+                             json=json.dumps(request_data))
+    return response
 
 
 def transactions_deserializer(transactions_json):

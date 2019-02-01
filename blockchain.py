@@ -17,8 +17,9 @@ class BlockChain:
         self.mining_reward = 20
 
     def __str__(self) -> str:
-        return json.dumps(self, default=lambda o: o.decode('ascii') if type(o) is bytes else o.__dict__,
-          sort_keys=True, indent=4)
+        return json.dumps(self,
+                          default=lambda o: o.decode('ascii') if type(o) is bytes else o.__dict__,
+                          sort_keys=True, indent=4)
 
     @staticmethod
     def genesis_block():

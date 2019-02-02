@@ -10,10 +10,11 @@ import socket
 import cryptutil
 
 app = Flask(__name__)
-block_chain_name = "NewChain2"
+block_chain_name = "NewChain"
 block_chain = BlockChain()
 
 peers = []
+genesis_ip = '127.0.0.1'
 genesis_port = 5000
 
 adm_ip = '127.0.0.1'
@@ -126,12 +127,19 @@ if __name__ == "__main__":
     peers.append((socket.gethostbyname(socket.gethostname()), socket.gethostname()))
     args = vars(parser.parse_args())
     if args['ip'] is not None and args['port'] is not None:
-        block_chain_req = parse_request(
-            requests.get("http://"+args['ip']+':'+args['port']+"/state"))
-        chain = chain_deserializer(block_chain['chain'])
-        synchronize_chain(chain)
-        peers = return_peers('127.0.0.1')
-        app.run('127.0.0.1', genesis_port+randint(1,10))
+        try:
+            block_chain_req = parse_request(
+                requests.get("http://"+args['ip']+':'+args['port']+"/state"))
+            chain = chain_deserializer(block_chain['chain'])
+            synchronize_chain(chain)
+
+            peers = return_peers(genesis_ip=genesis_ip, genesis_port=genesis_port)
+            sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
+
+            app.run('127.0.0.1', genesis_port+randint(1,10))
+        except KeyError as exc:
+            print("Cannot connect to server and synchronize chain: "+str(exc))
+
     else:
         response = sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
         chain_updated(response.text)

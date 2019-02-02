@@ -23,6 +23,7 @@ We can mining, adding transactions to the wallet, create wallet (public key is t
 Basic functionalities and structure was implemented, it's a POC.
 
 
-
+![Alt text](img/blocks.png?raw=true "Blocks")
+![Alt text](img/transactions.png?raw=true "Transactions")
 
 

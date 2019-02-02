@@ -10,7 +10,7 @@ Use docker command: <code>docker build . -t block_chain</code>
 You can use too this command:
 <code>python3 -m pip install -r requirements.txt after installation use python3 blockchain_http.py</code>
 
-## How it works?
+## How does it works?
 
 So we create the chain with genesis block it's a base block for the chain. The mining theory was described widely in https://en.bitcoin.it/wiki/Mining
 

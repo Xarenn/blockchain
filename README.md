@@ -5,7 +5,7 @@ P2P created with FLASK Python3
 
 ## How to run it?
 
-Use docker
+Use docker command: <code>docker build . -t block_chain</code>
 
 You can use too this command:
 <code>python3 -m pip install -r requirements.txt after installation use python3 blockchain_http.py</code>

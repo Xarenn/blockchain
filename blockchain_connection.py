@@ -1,3 +1,5 @@
+from urllib3.exceptions import NewConnectionError
+
 from blockchain import Transaction, Block
 
 import socket
@@ -18,8 +20,12 @@ def sync_admin_server(adm_ip, adm_port, block_chain, name):
     request_data.append({"reward": block_chain.mining_reward})
     request_data.append({"name": name})
 
-    response = requests.post("http://"+adm_ip+':'+str(adm_port)+"/api/v2/sync/",
-                             json=json.dumps(request_data))
+    try:
+        response = requests.post("http://"+adm_ip+':'+str(adm_port)+"/api/v2/sync/",
+                                 json=json.dumps(request_data))
+    except requests.exceptions.ConnectionError as exception:
+        print("Cannot connect to admin page "+str(exception))
+        return None
     return response
 
 

@@ -116,6 +116,15 @@ def chain_updated(response_data):
     print(" * Chain status "+response_data)
 
 
+def sync_with_admin_page():
+    try:
+        response_adm = sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
+        if response_adm is not None:
+            chain_updated(response_adm.text)
+    except ConnectionError as exception:
+        print("Cannot connect to admin page "+str(exception))
+
+
 if __name__ == "__main__":
     prepare()
     parser = argparse.ArgumentParser()
@@ -134,13 +143,13 @@ if __name__ == "__main__":
             synchronize_chain(chain)
 
             peers = return_peers(genesis_ip=genesis_ip, genesis_port=genesis_port)
-            sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
+            sync_with_admin_page()
 
             app.run('127.0.0.1', genesis_port+randint(1,10))
         except KeyError as exc:
             print("Cannot connect to server and synchronize chain: "+str(exc))
 
     else:
-        response = sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
-        chain_updated(response.text)
+        sync_with_admin_page()
+
         app.run('127.0.0.1', genesis_port)

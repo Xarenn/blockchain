@@ -1,10 +1,14 @@
 # BlockChain
 Blockchain implementation based on (structure functonalities) https://bitcoin.org/bitcoin.pdf
+
 P2P created with FLASK Python3
 
 ## How to run it?
 
-Use docker or command python3 -m pip install -r requirements.txt after installation use python3 blockchain_http.py
+Use docker
+
+You can use too this command:
+<code>python3 -m pip install -r requirements.txt after installation use python3 blockchain_http.py</code>
 
 ## How it works?
 

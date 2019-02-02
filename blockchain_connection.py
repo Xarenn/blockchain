@@ -4,6 +4,8 @@ import socket
 import requests
 import json
 
+from blockchain_http import genesis_port
+
 
 def dump_block(block):
     return {"b_hash": block.hash, "p_hash": block.prev_hash}
@@ -62,7 +64,7 @@ def json_initializer(request) -> tuple:
 
 def connect_genesis_server(genesis_ip: str):
     peer_data = {"name": socket.gethostname(), "IP": 'localhost'}
-    requests.post("http://"+genesis_ip+":5000/connect", data=peer_data)
+    requests.post("http://"+genesis_ip+":"+genesis_port+"/connect", data=peer_data)
 
 
 def return_peers(genesis_ip: str) -> list:

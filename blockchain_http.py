@@ -10,9 +10,14 @@ import socket
 import cryptutil
 
 app = Flask(__name__)
+block_chain_name = "NewChain2"
 block_chain = BlockChain()
+
 peers = []
 genesis_port = 5000
+
+adm_ip = '127.0.0.1'
+adm_port = 8000
 
 
 @app.route("/mine", methods=['POST', 'GET'])
@@ -106,8 +111,8 @@ def prepare():
     block_chain.mine_block(pub_txt)
 
 
-def chain_updated(response):
-    print(response.text)
+def chain_updated(response_data):
+    print(" * Chain status "+response_data)
 
 
 if __name__ == "__main__":
@@ -118,16 +123,16 @@ if __name__ == "__main__":
 
     #ip = requests.get('https://api.ipify.org').text EXTERNAL IP SERVICE
 
-    peers.append(('127.0.0.1', socket.gethostname()))
+    peers.append((socket.gethostbyname(socket.gethostname()), socket.gethostname()))
     args = vars(parser.parse_args())
     if args['ip'] is not None and args['port'] is not None:
-        block_chain_req = parse_request(requests.get("http://localhost:5000/state"))
+        block_chain_req = parse_request(
+            requests.get("http://"+args['ip']+':'+args['port']+"/state"))
         chain = chain_deserializer(block_chain['chain'])
         synchronize_chain(chain)
         peers = return_peers('127.0.0.1')
-        print(peers)
         app.run('127.0.0.1', genesis_port+randint(1,10))
     else:
-        response = sync_admin_server('127.0.0.1',8000, block_chain, 'NewChain')
-        chain_updated(response)
+        response = sync_admin_server(adm_ip, adm_port, block_chain, block_chain_name)
+        chain_updated(response.text)
         app.run('127.0.0.1', genesis_port)

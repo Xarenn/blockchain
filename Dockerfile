@@ -6,4 +6,5 @@ RUN pip install -r /requirements.txt
 copy . /app
 WORKDIR /app
 
+EXPOSE 5000
 CMD ["blockchain_http.py"]

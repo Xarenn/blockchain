@@ -90,7 +90,7 @@ def synchronize_chain(sync_block_chain: list):
     block_chain = sync_block_chain
 
 
-def prepare():
+def prepare_chain_for_tests():
     pub, prv = cryptutil.fake_new_keys(2048)
     pub2, prv2 = cryptutil.fake_new_keys(2048)
 
@@ -126,7 +126,7 @@ def sync_with_admin_page():
 
 
 if __name__ == "__main__":
-    prepare()
+    prepare_chain_for_tests()
     parser = argparse.ArgumentParser()
     parser.add_argument('-ip', type=str)
     parser.add_argument('-port', type=int)

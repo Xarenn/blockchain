@@ -20,9 +20,9 @@ I used the SHA256 hash algorithm to create the block's hash, mine_difficulty was
 
 PyCrypto with RSA 2048 size keys used to sign transactions (signing use private_key).
 
-We can mining, adding transactions to the wallet, create wallet (public key is the address of the wallet)
+We can mining, create wallet, adding transactions to the wallet (public key is the address of the wallet)
 
-Basic functionalities and structure were implemented, it's a POC.
+Basic functionalities and structure was implemented, it's a POC.
 
 
 ![Alt text](img/blocks.png?raw=true "Blocks")

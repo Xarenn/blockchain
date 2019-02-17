@@ -21,6 +21,15 @@ adm_ip = '127.0.0.1'
 adm_port = 8000
 
 
+@app.route("/wallet", methods=['POST', 'GET'])
+def wallet_view():
+    try:
+        return render_template('wallet.html')
+    except KeyError as error:
+        print("Cannot find "+str(error))
+        return render_template('wallet.html')
+
+
 @app.route("/mine", methods=['POST', 'GET'])
 def mine_block_endpoint():
     try:

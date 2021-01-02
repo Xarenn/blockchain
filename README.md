@@ -1,5 +1,5 @@
 # BlockChain
-Blockchain implementation based on (structure functonalities) https://bitcoin.org/bitcoin.pdf
+Blockchain implementation based on (basic functonalities) https://bitcoin.org/bitcoin.pdf
 
 P2P created with FLASK Python3
 
